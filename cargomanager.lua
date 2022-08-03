@@ -9,19 +9,18 @@ local function search(item)
         for slot = 1, component.invoke(address, "getInventorySize", storageSide) do
             value = component.invoke(address, "getStackInSlot", storageSide, slot).label)
             if value = string.match(item) then
-                print(component.invoke(address, "getStackInSlot", storageSide, slot).amount, component.invoke(address, "getStackInSlot", storageSide, slot).label)
-                return address
+                return address, slot
             end
         end
     end
 end
 
-local function get(item, count)
-    local target = search(item)
+local function get(count, item)
     local itemsTotal = 0
     local itemsLeft = count
     while itemsTotal < count do
-        local itemsMoved = component.invoke(target, "transferItem", storageSide, conveyorSide, itemsLeft)
+        local address, slot = search(item)
+        local itemsMoved = component.invoke(address, "transferItem", storageSide, conveyorSide, itemsLeft, slot)
         local itemsTotal = itemsTotal + itemsMoved
         local itemsLeft = itemsLeft - itemsMoved
     end
